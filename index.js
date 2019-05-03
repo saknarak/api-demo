@@ -76,7 +76,31 @@ app.get('/api/student/:id', async (req, res) => {
 
 
 app.post('/api/student', async (req, res) => {
-
+  // TODO:
+  try {
+    if (!req.body.code || !req.body.name || !req.body.tid) {
+      throw new Error('code, name, tid is required')
+    }
+    let row = await db('student').where({code: req.body.code}).then(rows => rows[0])
+    if (!row) {
+      let ids = await db('student').insert({
+        code: req.body.code,
+        name: req.body.name,
+        tid: req.body.tid,
+        birth: req.body.birth,
+      })
+      res.send({ ok: 1, id: ids[0] })
+    } else {
+      await db('student').update({
+        name: req.body.name,
+        tid: req.body.tid,
+        birth: req.body.birth,
+      })
+      res.send({ ok: 1, id: row.id })
+    }
+  } catch (e) {
+    res.send({ ok: 0, error: e.message })
+  }
 })
 
 app.listen(7001, () => {
