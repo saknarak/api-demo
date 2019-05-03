@@ -91,11 +91,13 @@ app.post('/api/student', async (req, res) => {
       })
       res.send({ ok: 1, id: ids[0] })
     } else {
-      await db('student').update({
-        name: req.body.name,
-        tid: req.body.tid,
-        birth: req.body.birth,
-      })
+      await db('student')
+        .where({code: req.body.code})
+        .update({
+          name: req.body.name,
+          tid: req.body.tid,
+          birth: req.body.birth,
+        })
       res.send({ ok: 1, id: row.id })
     }
   } catch (e) {
