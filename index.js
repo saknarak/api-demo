@@ -66,7 +66,7 @@ app.get('/api/student/:id', async (req, res) => {
       throw new Error('student not found')
     }
     res.send({
-      status: 1,
+      ok: 1,
       student: row,
     })
   } catch (e) {
