@@ -1,7 +1,6 @@
 {
   "name": "api",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -15,5 +14,15 @@
     "express": "^4.16.4",
     "knex": "^0.16.5",
     "mysql": "^2.17.1"
-  }
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/saknarak/api-demo.git"
+  },
+  "bugs": {
+    "url": "https://github.com/saknarak/api-demo/issues"
+  },
+  "homepage": "https://github.com/saknarak/api-demo#readme",
+  "description": ""
 }
