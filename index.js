@@ -50,7 +50,7 @@ app.get('/api/student', async (req, res) => {
       .orderBy('code', 'asc')
     res.send({
       ok: 1,
-      rows,
+      students: rows,
     })
   } catch (e) {
     res.send({ ok: 0, error: e.message })
