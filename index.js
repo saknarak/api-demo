@@ -117,15 +117,24 @@ app.post('/api/photo', async (req, res) => {
     if (!req.files.photo) {
       return res.send({ ok: 0, error: 'No files were uploaded.' });
     }
-    console.log('req.body=', req.body)
-    let id = await db('photo').insert({ refType: req.body.refType, refId: req.body.refId }).then(ids => ids[0])
-    let fname = `${id}.jpg`
+    let photoId = await db('photo').insert({ refType: req.body.refType, refId: req.body.refId }).then(ids => ids[0])
+    let fname = `${photoId}.jpg`
+    let photoUrl = `/photo/${fname}`
     req.files.photo.mv(`./public/photo/${fname}`, async err => {
       if (err) {
         return res.send({ ok: 0, error: err.message })
       }
-      await db('photo').where({ id }).update({file: `/photo/${fname}`})
-      res.send({ ok: 1, id, url: `/photo/${id}.jpg` })
+      await db('photo')
+        .where({ id: photoId })
+        .update({file: `/photo/${fname}`})
+      if (req.body.refId) {
+        await db('student')
+          .where({id: req.body.refId})
+          .update({
+            photo: photoUrl,
+          })
+      }
+      res.send({ ok: 1, id: photoId, url: photoUrl })
     })
   } catch (e) {
     res.send({ ok: 0, error: e.message })
