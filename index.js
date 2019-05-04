@@ -1,5 +1,7 @@
+const path = require('path')
 const express = require('express')
 const bodyParser = require('body-parser')
+const fileUpload = require('express-fileupload')
 const cors = require('cors')
 const knex = require('knex')
 
@@ -22,6 +24,7 @@ const app = express()
 
 app.use(express.static('./public'))
 app.use(cors())
+app.use(fileUpload());
 
 app.get('/', (req, res) => {
   res.send({ ok: 1 })
@@ -100,6 +103,30 @@ app.post('/api/student', async (req, res) => {
         })
       res.send({ ok: 1, id: row.id })
     }
+  } catch (e) {
+    res.send({ ok: 0, error: e.message })
+  }
+})
+
+app.get('/api/photo/:id', async (req, res) => {
+  res.sendFile(path.resolve(`./public/photo/${req.params.id}.jpg`))
+})
+
+app.post('/api/photo', async (req, res) => {
+  try {
+    if (!req.files.photo) {
+      return res.send({ ok: 0, error: 'No files were uploaded.' });
+    }
+    console.log('req.body=', req.body)
+    let id = await db('photo').insert({ refType: req.body.refType, refId: req.body.refId }).then(ids => ids[0])
+    let fname = `${id}.jpg`
+    req.files.photo.mv(`./public/photo/${fname}`, async err => {
+      if (err) {
+        return res.send({ ok: 0, error: err.message })
+      }
+      await db('photo').where({ id }).update({file: `/photo/${fname}`})
+      res.send({ ok: 1, id })
+    })
   } catch (e) {
     res.send({ ok: 0, error: e.message })
   }
