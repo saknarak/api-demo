@@ -125,7 +125,7 @@ app.post('/api/photo', async (req, res) => {
         return res.send({ ok: 0, error: err.message })
       }
       await db('photo').where({ id }).update({file: `/photo/${fname}`})
-      res.send({ ok: 1, id })
+      res.send({ ok: 1, id, url: `/photo/${id}.jpg` })
     })
   } catch (e) {
     res.send({ ok: 0, error: e.message })
